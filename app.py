@@ -6,7 +6,7 @@ import openai
 from flask import Flask, request, render_template, url_for
 
 app = Flask(__name__)
-openai.api_key = "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"
+openai.api_key = ""
 
 def get_system_prompt():
     return "You are a fun lil ai manager buddy I'm playing with. You are running in a flask app."
