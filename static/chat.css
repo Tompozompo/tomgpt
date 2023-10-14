@@ -1,0 +1,35 @@
+#chat-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.message {
+    display: inline-block;
+    max-width: 80%;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #f1f0f0;
+}
+
+.message.user {
+    background-color: #4CAF50;
+    color: white;
+    align-self: flex-end;
+}
+
+.message.bot {
+    background-color: #ddd;
+    color: black;
+    align-self: flex-start;
+}
+
+button[type="submit"] {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}

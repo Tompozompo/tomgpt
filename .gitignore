@@ -1,0 +1,11 @@
+# Ignore compiled Python files
+*.pyc
+
+# Ignore the virtual environment directory
+venv/
+
+# Ignore the Flask cache directory
+__pycache__/
+
+# Ignore the local configuration file
+instance/
