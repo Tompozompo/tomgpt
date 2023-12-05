@@ -1,35 +1,64 @@
-#chat-container {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
+/* Style for the chat container */ 
+#chat-container { 
+    border: 1px solid #ddd; 
+    padding: 10px; 
+    margin: 10px 0; 
+    height: 300px; /* fixed height, could be adjusted */ 
+    overflow-y: auto; /* enable scroll if content exceeds container height */ } 
 
-.message {
-    display: inline-block;
-    max-width: 80%;
-    margin: 10px;
-    padding: 10px;
-    border-radius: 10px;
-    background-color: #f1f0f0;
-}
 
-.message.user {
-    background-color: #4CAF50;
-    color: white;
-    align-self: flex-end;
-}
+/* Individual message styling */ 
+.message { 
+    padding: 5px 10px; 
+    margin: 5px 0; 
+    border-radius: 5px; 
+    max-width: 80%; 
+} 
+    
+/* Differentiate between user and assistant messages */ 
+.user { 
+    background-color: #dcf8c6; 
+    align-self: flex-end; 
+} 
+    
+.assistant { 
+    background-color: #e5e5ea; 
+    align-self: flex-start; 
+} 
+    
+/* Style for the form and input area */ 
+form { 
+    display: flex; 
+    margin-top: 10px; 
+} 
+    
+/* Style the text area to look more like a chat input */ 
+#user_input { 
+    border: 1px solid #ddd; 
+    border-radius: 15px; 
+    padding: 10px; flex-grow: 1; /* take up available space */ 
+    margin-right: 10px; /* spacing between textarea and button */ 
+    resize: none;  /* disable manual resize handle */ 
+} 
+    
+/* Style for the 'Send' button */ 
+#send_button { background-color: #007bff; 
+    border: none; 
+    padding: 10px 20px; 
+    color: white; 
+    border-radius: 15px; 
+    cursor: pointer; 
+} 
+            
+/* Disabled state for 'Send' button */  
+#send_button:disabled { background-color: #ccc; cursor: default; }
 
-.message.bot {
-    background-color: #ddd;
-    color: black;
-    align-self: flex-start;
-}
-
-button[type="submit"] {
-    background-color: green;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
+.code-block { 
+    background-color: #f7f7f9; 
+    border: 1px solid #e1e1e8; 
+    border-radius: 4px; 
+    padding: 10px; 
+    font-family: monospace; 
+    white-space: pre; 
+    overflow-x: auto; 
 }

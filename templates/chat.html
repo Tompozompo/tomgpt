@@ -5,20 +5,41 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='chat.css') }}">
 </head>
 <body>
-    <h1>Chat with the Chatbot</h1>
+    <h1>hi Tom</h1>
 
     <div id="chat-container">
-        {% for message in conversation %}
-            <div class="message {{ message.role }}">
-                {{ message.content }}
-            </div>
+        {% for message in messages %}
+            {% if message.role == "user" %}
+                <div class="message user"> 
+                    {{ message.content[0].text.value }}
+                </div>
+            {% else %}
+                <div class="message assistant"> 
+                    {{ message.content[0].text.value }}
+                </div>
+            {% endif %}
         {% endfor %}
     </div>
 
     <form method="POST" action="/process">
-        <input type="text" name="user_input" placeholder="Type your message..." />
-        <button type="submit">Send</button>
-    </form>
+        <textarea id="user_input" name="user_input" placeholder="Type your message..." rows="1"></textarea> 
+        <button type="submit" id="send_button">Send</button> 
+    </form> 
 
-</body>
+    <script> 
+        var textarea = document.getElementById('user_input'); 
+        var sendButton = document.getElementById('send_button'); 
+        // Function to resize textarea based on content 
+        function resizeTextarea() { 
+            this.style.height = 'auto'; 
+        } 
+        // Resizing the textarea when the content changes 
+        textarea.addEventListener('input', resizeTextarea); 
+        // Disable send button after click 
+        sendButton.addEventListener('click', function() { 
+            this.disabled = true; 
+            this.innerText = 'Thinking...'; 
+        });
+    </script> 
+</body> 
 </html>
