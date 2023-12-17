@@ -1,5 +1,5 @@
 import json
-from functions.chatfunction import ChatFunction
+from tomgpt.functions.chatfunction import ChatFunction
 from typing import Dict
 
 class WriteToFileFunction(ChatFunction):
@@ -19,7 +19,7 @@ class WriteToFileFunction(ChatFunction):
             "properties": {
                 "filename": {
                     "type": "string",
-                    "description": "The name of the file to write to.",
+                    "description": "The name of the file to write to. Does not accept paths; names only",
                 },
                 "content": {
                     "type": "string",

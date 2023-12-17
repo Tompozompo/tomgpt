@@ -1,5 +1,5 @@
 import os
-from functions.chatfunction import ChatFunction
+from tomgpt.functions.chatfunction import ChatFunction
 from typing import Dict
 
 class ReadLocalFileFunction(ChatFunction):
