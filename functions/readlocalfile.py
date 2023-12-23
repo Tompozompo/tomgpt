@@ -4,6 +4,10 @@ from typing import Dict
 
 class ReadLocalFileFunction(ChatFunction):
 
+    def __init__(self, root) -> None:
+        super().__init__()
+        self.root = root
+
     @property
     def name(self) -> str:
         return "read_local_file"
@@ -28,15 +32,16 @@ class ReadLocalFileFunction(ChatFunction):
     def execute(self, **kwargs) -> Dict:
         path = kwargs.get('path')
         response = {}
+        file_path = os.path.join(self.root, path)
 
         # Check if the file exists
-        if not os.path.exists(path):
+        if not os.path.exists(file_path):
             response['error'] = "The file does not exist."
             return response
 
         try:
             # Read the content of the file
-            with open(path, 'r') as file:
+            with open(file_path, 'r') as file:
                 content = file.read()
             response['content'] = content
         except Exception as e:

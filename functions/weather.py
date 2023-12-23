@@ -1,6 +1,6 @@
 import os
 from typing import Dict
-from functions.chatfunction import ChatFunction
+from tomgpt.functions.chatfunction import ChatFunction
 import json 
 import requests
 

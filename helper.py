@@ -1,61 +1,31 @@
-from functions.weather import WeatherFunction
-from functions.websearch import WebSearchFunction
-from functions.writefile import WriteToFileFunction
-from functions.readlocalfile import ReadLocalFileFunction
-from functions.readurl import ReadFromURLFunction
-from functions.savetogithub import SaveToGithubFunction
-
 from flask import Flask
 from threading import Thread
-from flaskapp import app
 import json
 import os
 
-functions = [
-    WeatherFunction(),
-    WebSearchFunction(),
-    WriteToFileFunction(),
-    ReadFromURLFunction(),
-    ReadLocalFileFunction()
-]
+from openai import OpenAI
+from tomgpt.functions.chatfunction import ChatFunction
 
-allowed_folders = [
-    "functions",
-    "static",
-    "templates",
-    "output_files",
-]
-
-files = [ #old and not used at this point 6:31 PM December 4, 2023
-    "create_assistant.py",
-    "flaskapp.py",
-    "helper.py",
-    "templates/chat.html",
-    "static/chat.css",
-    "functions/chatfunction.py",
-    "functions/weather.py",
-    "functions/websearch.py",
-    "functions/change_assistant.py"
-]
-
-def _get_function_by_name(name):
+def _get_function_by_name(name, functions):
     for function in functions:
         if function.name == name:
             return function
     return None
 
-def get_tool_outputs(submit_tool_outputs):
+def _get_tool_outputs(submit_tool_outputs, functions):
     tool_calls = submit_tool_outputs.tool_calls
     tool_output = [] 
     for tool_call in tool_calls:
-        function_to_call = _get_function_by_name(tool_call.function.name)
-        print("calling function {}".format(function_to_call))
+        function_to_call = _get_function_by_name(tool_call.function.name, functions)
+        print("calling function {}".format(function_to_call.name))
         if not function_to_call:
-            return "Function not found"
+            tool_output.append({'error': 'Function {} not found'.format(function_to_call.name)})
+            continue
         function_args = json.loads(tool_call.function.arguments)
         print("function args {}".format(function_args))
         if not function_args:
-            return "No arguments provided"
+            tool_output.append({'error': 'No arguments provided!'})
+            continue
         function_response = function_to_call.execute(**function_args)
         print("function response {}".format(function_response))
         tool_output.append({
@@ -64,7 +34,7 @@ def get_tool_outputs(submit_tool_outputs):
         })
     return tool_output
 
-def process_run(run,client,thread):
+def process_run(run, client, thread, functions):
     while run.status != "completed":
         run = client.beta.threads.runs.retrieve(
             thread_id=thread.id,
@@ -73,7 +43,8 @@ def process_run(run,client,thread):
         print('running...',end='')
         if run.status == "requires_action":
             print('calling function')
-            function_outputs = get_tool_outputs(run.required_action.submit_tool_outputs)
+            function_outputs = _get_tool_outputs(run.required_action.submit_tool_outputs, functions)
+            print('function_outputs {}'.format(function_outputs))
             run = client.beta.threads.runs.submit_tool_outputs(
                 thread_id=thread.id,
                 run_id=run.id,
@@ -86,7 +57,11 @@ def process_run(run,client,thread):
         elif run.status == "cancelled":
             return
 
-def get_files_config(client):
+def get_files_config(client, files):
+    """
+    Add files directly to OpenAI client using files.create
+    This never worked quite right. 
+    """
     files_config = []
     for file in files:
         files_config.append(client.files.create(
@@ -95,7 +70,11 @@ def get_files_config(client):
         ).id)
     return files_config
 
-def get_tools_config(interpreter=True):
+def get_tools_config(functions: [ChatFunction], interpreter=False):
+    """
+    Get the OpenAI client tools config, from a list of ChatFunctions.
+    Also can enablue interpreter, which lets it run code. It was also shitty I just want it to make code not run it. 
+    """
     tools_config = []
     if interpreter:
         tools_config = [{"type": "code_interpreter"}]
@@ -107,7 +86,7 @@ def get_tools_config(interpreter=True):
     return tools_config
 
 
-def get_directory_tree(dir_path):
+def get_directory_tree(dir_path, allowed_folders=None):
     """
     Get the directory tree structure as a list of relative paths
     including files at the root and files from allowed folders.
@@ -120,11 +99,27 @@ def get_directory_tree(dir_path):
         if 'venv' in dirs:
             dirs.remove('venv')
         for folder in dirs:
-            if folder in allowed_folders:
+            if not allowed_folders or folder in allowed_folders:
                 folder_path = os.path.join(root, folder)
                 for file in os.listdir(folder_path):
                     file_path = os.path.relpath(os.path.join(folder_path, file), dir_path)
                     directory_tree.append(file_path)
+
+    return directory_tree
+
+def get_directory_tree(root_dir, allowed_folders=None):
+    """
+    Get the directory tree structure as a list of relative paths,
+    including files at root_dir and any files in allowed_folders.
+    """
+    directory_tree = []
+    
+    for root, dirs, files in os.walk(root_dir, topdown=True): 
+        relative_root = os.path.relpath(root, root_dir)
+        if relative_root == '.' or relative_root in allowed_folders:
+            for file in files:
+                file_path = os.path.join(relative_root, file)
+                directory_tree.append(file_path)
 
     return directory_tree
 

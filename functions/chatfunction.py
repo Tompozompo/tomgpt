@@ -1,46 +1,42 @@
 # chatfunction.py
 
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, abstractproperty
 from typing import Dict
 
 class ChatFunction(ABC):
 
-    @property
-    @abstractmethod
+    @abstractproperty
     def name(self) -> str:
         """
         name_in_snake_case
         """
         pass
 
-    @property
-    @abstractmethod
+    @abstractproperty
     def description(self) -> str:
         """
         A short description of the function
         """
         pass
 
-
-    @property 
-    @abstractmethod
+    @abstractproperty
     def parameters(self) -> Dict:
         """
         A JSON schema describing the parameters of the function. Example: 
         {
-        "type": "object",
-        "properties": {
-            "location": {
-                "type": "string",
-                "description": "The city and state, e.g. San Francisco, CA",
+            "type": "object",
+            "properties": {
+                "test_property": {
+                    "type": "string",
+                    "description": "An example of a property",
+                },
+                "test_number": {
+                    "type": "string",
+                    "enum": ["celsius", "fahrenheit"],
+                    "description": "Wow could even have enums?",
+                },
             },
-            "format": {
-                "type": "string",
-                "enum": ["celsius", "fahrenheit"],
-                "description": "The temperature unit to use. Infer this from the users location.",
-            },
-        },
-        "required": ["location", "format"],
+            "required": ["test_property", "test_number"],
         }
         """
         pass

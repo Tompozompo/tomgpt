@@ -11,7 +11,7 @@ from werkzeug.utils import safe_join
 app = Flask(__name__)
 api_key = os.environ.get("OPENAI_API_KEY")
 client = OpenAI(api_key=api_key)
-THREAD = client.betaasst_jyWXO68B3QXugwqU37L6CFT1.threads.create()
+THREAD = client.beta.threads.create()
 
 @app.route('/')
 def chat():
@@ -42,6 +42,7 @@ def process():
     print(messages)
     return render_template('chat.html', messages=messages)
 
+# this was for testing the url read function 
 FILES_DIRECTORY = ''
 @app.route('/files/<path:filename>')
 def get_file(filename):

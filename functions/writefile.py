@@ -1,8 +1,13 @@
 import json
+import os
 from tomgpt.functions.chatfunction import ChatFunction
 from typing import Dict
 
 class WriteToFileFunction(ChatFunction):
+
+    def __init__(self, root) -> None:
+        super().__init__()
+        self.root = root
 
     @property
     def name(self) -> str:
@@ -40,7 +45,7 @@ class WriteToFileFunction(ChatFunction):
             return response
 
         try:
-            file_path = f'output_files/{filename}'
+            file_path = os.path.join(self.root, 'output_files', filename)
 
             # Write the content to the file
             with open(file_path, 'w') as file:
