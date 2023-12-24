@@ -27,16 +27,6 @@ class CMDAssistant():
             self._is_initialized = True
             # helper.start_flask_app() # i was using this for downloading from url tests
 
-    def end_conversation(self, final_message: str):
-        thread_id = self.get_thread_id()  # Extract the thread_id from the instance
-        final_message_with_id = f"{final_message} (Thread ID: {thread_id})"
-        # Send final message - the actual method of sending this would be implemented as needed
-        self.send_message(final_message_with_id)
-
-    def get_thread_id(self):
-        # Extract the thread_id attribute from the instance
-        return getattr(self, 'thread_id', 'unknown')
-
     def run(self):
         print("+-+-+-+-+-+-+-+-+-+-+-+-+-+")
         print("ASSISTANT_ID: " + self.assistant_id)
