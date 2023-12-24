@@ -21,23 +21,22 @@ def _get_tool_outputs(submit_tool_outputs, functions):
         if not function_to_call:
             tool_output.append({'error': 'Function {} not found'.format(function_to_call.name)})
             continue
-        function_args = json.loads(tool_call.function.arguments)
-        print("function args {}".format(function_args))
-        if not function_args:
-            tool_output.append({'error': 'No arguments provided!'})
-            continue
-        function_response = function_to_call.execute(**function_args)
+        try:
+            function_args = json.loads(tool_call.function.arguments)
+            function_response = function_to_call.execute(**function_args)
+        except Exception as e:
+            function_response = {'Exception during execute: {}'.format(e)}    
         print("function response {}".format(function_response))
         tool_output.append({
             "tool_call_id": tool_call.id,
             "output": str(function_response)
-        })
+        })   
     return tool_output
 
-def process_run(run, client, thread, functions):
+def process_run(run, client, thread_id, functions):
     while run.status != "completed":
         run = client.beta.threads.runs.retrieve(
-            thread_id=thread.id,
+            thread_id=thread_id,
             run_id=run.id
         )
         print('running...',end='')
@@ -46,7 +45,7 @@ def process_run(run, client, thread, functions):
             function_outputs = _get_tool_outputs(run.required_action.submit_tool_outputs, functions)
             print('function_outputs {}'.format(function_outputs))
             run = client.beta.threads.runs.submit_tool_outputs(
-                thread_id=thread.id,
+                thread_id=thread_id,
                 run_id=run.id,
                 tool_outputs=function_outputs
             )
@@ -121,7 +120,7 @@ def get_directory_tree(root_dir, allowed_folders=None):
                 file_path = os.path.join(relative_root, file)
                 directory_tree.append(file_path)
 
-    return directory_tree
+    return directory_tree        
 
 def start_flask_app():
     global app

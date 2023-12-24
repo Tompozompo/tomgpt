@@ -2,10 +2,8 @@
 # Fucking around with ChatGPT's Assistant API. 
 # Will create a new assistant, then allow interacting via the cmd. 
 
-from openai import OpenAI
 import os
-
-import tomgpt.helper
+from openai import OpenAI
 from tomgpt.cmd_assistant import CMDAssistant
 from tomgpt.functions.chatfunction import ChatFunction
 from tomgpt.functions.executepython import ExecutePythonScript
@@ -14,7 +12,11 @@ from tomgpt.functions.readurl import ReadFromURLFunction
 from tomgpt.functions.weather import WeatherFunction
 from tomgpt.functions.websearch import WebSearchFunction
 from tomgpt.functions.writefile import WriteToFileFunction
+from tomgpt.functions.exceptionthrowing import ExceptionThrowingChatFunction
+from tomgpt.functions.saveconversation import SaveConversationChatFunction
 from tomgpt.prompts import *
+from tomgpt.helper import *
+
 
 def create_assistant(
         client: OpenAI,
@@ -45,9 +47,11 @@ if __name__=="__main__":
         "output_files",
     ]
 
-    name = "TomGPT" # "With Functions" "Self-Code Aware"
-    model = "gpt-4-1106-preview"
-    assistant_id = "" # if empty a new one will be made
+    name = 'TomGPT' # "With Functions" "Self-Code Aware"
+    model = 'gpt-4-1106-preview'
+    assistant_id = input('assistant_id: ')
+    thread_id = input('thread_id: ')
+    # if empty a new one will be made
 
     pb = PromptBuilder()
     pb.add(TOMGPT)
@@ -61,7 +65,9 @@ if __name__=="__main__":
         ReadFromURLFunction(),
         WriteToFileFunction(root_dir),
         ReadLocalFileFunction(root_dir),
-        ExecutePythonScript()
+        ExecutePythonScript(),
+        ExceptionThrowingChatFunction(),
+        SaveConversationChatFunction(root_dir),
     ]
     client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
     if not assistant_id:
@@ -73,6 +79,8 @@ if __name__=="__main__":
             functions=functions,
             interpreter=False
         )
+    if not thread_id:
+        thread_id = (client.beta.threads.create()).id
 
-    cmd = CMDAssistant(assistant_id, functions, client)
+    cmd = CMDAssistant.getInstance(assistant_id, thread_id, functions, client)
     cmd.run()

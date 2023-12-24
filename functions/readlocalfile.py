@@ -1,10 +1,16 @@
+# readlocalfile.py
+# Read a file from the local filesystem.  
+
 import os
 from tomgpt.functions.chatfunction import ChatFunction
 from typing import Dict
 
 class ReadLocalFileFunction(ChatFunction):
 
-    def __init__(self, root) -> None:
+    def __init__(self, root: str) -> None:
+        """
+        root: str - the root of the local filesystem to read from
+        """
         super().__init__()
         self.root = root
 
