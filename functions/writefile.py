@@ -44,7 +44,7 @@ class WriteToFileFunction(ChatFunction):
 
         # Sanitize the filename to avoid directory traversal or overwriting important files
         if '..' in filename or '/' in filename:
-            response['error'] = 'Invalid filename. Cannot contain ".." or "/".'
+            response['error'] = 'Invalid filename {filename}. Cannot contain ".." or "/".'
             return response
 
         try:

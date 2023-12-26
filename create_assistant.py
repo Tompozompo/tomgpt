@@ -20,7 +20,7 @@ from tomgpt.functions.websearch import WebSearchFunction
 from tomgpt.functions.writefile import WriteToFileFunction
 from tomgpt.functions.exceptionthrowing import ExceptionThrowingChatFunction
 from tomgpt.functions.summarizeconversation import SummarizeConversationChatFunction
-from tomgpt.functions.savetogithub import SaveToGithubFunction
+from tomgpt.functions.creategithubpr import CreateGithubPRFunction
 from tomgpt.functions.updatethreadid import UpdateThreadIdChatFunction
 from tomgpt.functions.savecurrentthread import SaveCurrentThreadFunction
 from tomgpt.functions.change_assistant import ChangeAssistantFunction
@@ -109,7 +109,7 @@ if __name__=="__main__":
         GetAssistantThreadsFunction(),
         UpdateThreadIdChatFunction(),
         SaveCurrentThreadFunction(),
-        SaveToGithubFunction(root_dir, 'tomgpt', 'auto-branch'),
+        CreateGithubPRFunction('tomgpt', 'auto-branch'),
     ]
 
 

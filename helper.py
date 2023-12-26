@@ -18,15 +18,16 @@ def _get_tool_outputs(submit_tool_outputs, functions):
     for tool_call in tool_calls:
         function_to_call = _get_function_by_name(tool_call.function.name, functions)
         if not function_to_call:
-            tool_output.append({'error': 'Function {} not found'.format(function_to_call.name)})
+            tool_output.append({'error': 'Function {function_to_call.name} not found'})
             continue
-        print("calling function {}".format(function_to_call.name))
+        print("calling function {function_to_call.name}")
         try:
             function_args = json.loads(tool_call.function.arguments)
+            print("function_args {function_args}")
             function_response = function_to_call.execute(**function_args)
         except Exception as e:
-            function_response = {'Exception during execute: {}'.format(e)}    
-        print("function response {}".format(function_response))
+            function_response = {'Exception during execute: {e}'}    
+        print("function response {function_response}")
         tool_output.append({
             "tool_call_id": tool_call.id,
             "output": str(function_response)
