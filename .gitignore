@@ -9,3 +9,8 @@ __pycache__/
 
 # Ignore the local configuration file
 instance/
+
+# Ignore the generated files
+output_files/
+saved_conversations/
+assistants_config.json

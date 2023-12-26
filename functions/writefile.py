@@ -1,4 +1,7 @@
-import json
+"""
+WriteToFileFunction allows writing content to a specified file within the system. It includes safeguards to prevent unauthorized filesystem access.
+"""
+
 import os
 from tomgpt.functions.chatfunction import ChatFunction
 from typing import Dict

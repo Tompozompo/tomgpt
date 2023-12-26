@@ -17,10 +17,10 @@ def _get_tool_outputs(submit_tool_outputs, functions):
     tool_output = [] 
     for tool_call in tool_calls:
         function_to_call = _get_function_by_name(tool_call.function.name, functions)
-        print("calling function {}".format(function_to_call.name))
         if not function_to_call:
             tool_output.append({'error': 'Function {} not found'.format(function_to_call.name)})
             continue
+        print("calling function {}".format(function_to_call.name))
         try:
             function_args = json.loads(tool_call.function.arguments)
             function_response = function_to_call.execute(**function_args)
@@ -34,6 +34,7 @@ def _get_tool_outputs(submit_tool_outputs, functions):
     return tool_output
 
 def process_run(run, client, thread_id, functions):
+    print('process_run!')
     while run.status != "completed":
         run = client.beta.threads.runs.retrieve(
             thread_id=thread_id,
@@ -55,6 +56,7 @@ def process_run(run, client, thread_id, functions):
             return
         elif run.status == "cancelled":
             return
+    print()
 
 def get_files_config(client, files):
     """
@@ -126,6 +128,17 @@ def start_flask_app():
     global app
     app = Flask(__name__)
     Thread(target=lambda: app.run(use_reloader=False)).start()
+
+def get_root_directory():
+    return os.path.dirname(os.path.abspath(__file__))
+
+
+
+
+
+
+
+
 
 if __name__ == "__main__":
     string_to_pass = "Hello, Flask!"

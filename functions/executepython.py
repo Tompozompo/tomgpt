@@ -1,5 +1,3 @@
-# chatfunction.py
-
 from typing import Dict
 import subprocess
 import sys

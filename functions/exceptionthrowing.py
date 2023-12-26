@@ -1,6 +1,3 @@
-# ExceptionThrowingChatFunction.py
-# A mock implementation of ChatFunction that simply throws an exception.
-
 from tomgpt.functions.chatfunction import ChatFunction
 
 class ExceptionThrowingChatFunction(ChatFunction):

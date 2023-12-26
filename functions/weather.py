@@ -1,3 +1,7 @@
+"""
+WeatherFunction provides current weather information by making API calls to a weather service. It supports various query parameters for flexible weather data retrieval.
+"""
+
 import os
 from typing import Dict
 from tomgpt.functions.chatfunction import ChatFunction

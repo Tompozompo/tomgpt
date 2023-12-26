@@ -1,3 +1,7 @@
+"""
+ReadFromURLFunction is used to fetch and return the contents from a given URL. It encapsulates the logic needed to make HTTP GET requests and handle potential errors.
+"""
+
 import requests
 from tomgpt.functions.chatfunction import ChatFunction
 from typing import Dict

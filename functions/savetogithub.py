@@ -1,9 +1,21 @@
+"""
+This ChatFunction commits changes and pushes them to a specified GitHub repository.
+The GitHub authentication token is expected to be provided via an environment variable named GITHUB_TOKEN.
+"""
+
 from functions.chatfunction import ChatFunction
 from typing import Dict
 import subprocess
 import os
 
+from tomgpt.helper import get_root_directory
+
 class SaveToGithubFunction(ChatFunction):
+
+    def __init__(self, root, repository, branch):
+        self.root = root
+        self.repository = repository
+        self.branch = branch
 
     @property
     def name(self) -> str:
@@ -11,7 +23,7 @@ class SaveToGithubFunction(ChatFunction):
 
     @property
     def description(self) -> str:
-        return "Commits changes and pushes them to a GitHub repository."
+        return "Commits changes and pushes them to a GitHub repository using an authentication token from an environment variable."
 
     @property
     def parameters(self) -> Dict:
@@ -20,63 +32,26 @@ class SaveToGithubFunction(ChatFunction):
             "properties": {
                 "message": {
                     "type": "string",
-                    "description": "The commit message.",
-                },
-                "github_token": {
-                    "type": "string",
-                    "description": "GitHub token for authentication.",
-                },
-                "repository": {
-                    "type": "string",
-                    "description": "The GitHub repository to push to.",
-                },
-                "branch": {
-                    "type": "string",
-                    "description": "The branch to push to.",
-                },
+                    "description": "The commit message."
+                }
             },
-            "required": ["message", "github_token", "repository", "branch"],
+            "required": ["message"]
         }
 
     def execute(self, **kwargs) -> Dict:
         message = kwargs.get('message')
-        github_token = kwargs.get('github_token')
-        repository = kwargs.get('repository')
-        branch = kwargs.get('branch')
+        github_token = os.getenv('GITHUB_TOKEN')  # Expecting the token to be in an environment variable for security
         response = {}
-
+        print(get_root_directory())
         try:
-            # Configure Git user (This should be set to the user's Git config)
-            subprocess.run(['git', 'config', '--global', 'user.email', 'you@example.com'], check=True)
-            subprocess.run(['git', 'config', '--global', 'user.name', 'Your Name'], check=True)
-
-            # Add all changed files
-            subprocess.run(['git', 'add', '.'], check=True)
-
-            # Commit the changes
-            subprocess.run(['git', 'commit', '-m', message], check=True)
-
-            # Add the remote repository with the token for authentication
-            subprocess.run(['git', 'remote', 'add', 'origin', f'https://x-access-token:{github_token}@github.com/{repository}.git'], check=True)
-
-            # Pull the latest changes from the remote branch
-            subprocess.run(['git', 'pull', 'origin', branch], check=True)
-
-            # Push the commit to GitHub
-            subprocess.run(['git', 'push', 'origin', branch], check=True)
+            subprocess.run(['git', 'add', '.'], check=True, cwd=get_root_directory())
+            subprocess.run(['git', 'commit', '-m', message], check=True, cwd=self.root)
+            subprocess.run(['git', 'remote', 'add', 'origin', f'https://x-access-token:{github_token}@github.com/{self.repository}.git'], check=True, cwd=self.root)
+            subprocess.run(['git', 'pull', 'origin', self.branch], check=True, cwd=self.root)
+            subprocess.run(['git', 'push', 'origin', self.branch], check=True, cwd=self.root)
 
             response['message'] = "Changes have been successfully committed and pushed to GitHub."
         except subprocess.CalledProcessError as e:
-            response['error'] = f"A Git error occurred: {e.output}"
+            response['error'] = f"A Git error occurred: {e.stderr}"
 
         return response
-    
-if __name__ == "__main__":
-    save_to_github_function = SaveToGithubFunction()
-    result = save_to_github_function.execute(
-        message="Updated the project",
-        github_token="your_github_token",
-        repository="username/repo",
-        branch="main"
-    )
-    print(result)

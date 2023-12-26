@@ -1,5 +1,6 @@
-# readlocalfile.py
-# Read a file from the local filesystem.  
+"""
+ReadLocalFileFunction allows reading the contents of a local file from the specified root directory. It is designed to be safe and only allows reading from allowed directories and files.
+"""
 
 import os
 from tomgpt.functions.chatfunction import ChatFunction

@@ -6,11 +6,11 @@ class CMDAssistant():
     _instance = None  # Singleton instance variable
 
     @classmethod
-    def getInstance(cls, assistant_id=None, thread_id=None, functions=None, client=None):
+    def getInstance(cls, client=None, assistant_id=None, thread_id=None, functions=None):
         if not cls._instance:
             cls._instance = cls.__new__(cls)
-        if assistant_id and thread_id and functions and client:
-            cls._instance.initialize(assistant_id, thread_id, functions, client)
+        if client and assistant_id and thread_id and functions:
+            cls._instance.initialize(client, assistant_id, thread_id, functions)
         return cls._instance
 
     def __new__(cls):
@@ -18,12 +18,12 @@ class CMDAssistant():
             cls._instance = super(CMDAssistant, cls).__new__(cls)
         return cls._instance
 
-    def initialize(self, assistant_id, thread_id, functions, client):
+    def initialize(self, client, assistant_id, thread_id, functions):
         if '_is_initialized' not in self.__dict__:
+            self.client = client
             self.assistant_id = assistant_id
             self.thread_id = thread_id
             self.functions = functions
-            self.client = client
             self._is_initialized = True
             # helper.start_flask_app() # i was using this for downloading from url tests
 
@@ -36,7 +36,7 @@ class CMDAssistant():
         print("+-+-+-+-+-+-+-+-+-+-+-+-+-+")
         while True:
             print("+-+-+-+-+-+-+-+-+-+-+-+-+-+")
-            user_input = input('New Input: ')
+            user_input = input('New Input: ') or next(filter(None, iter(input, '')))
             print("+-+-+-+-+-+-+-+-+-+-+-+-+-+")
 
             message = self.client.beta.threads.messages.create(
