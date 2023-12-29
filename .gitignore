@@ -2,7 +2,7 @@
 *.pyc
 
 # Ignore the virtual environment directory
-tomgpt/venv/
+venv/
 
 # Ignore the Flask cache directory
 __pycache__/
