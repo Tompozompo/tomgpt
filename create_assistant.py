@@ -102,5 +102,5 @@ if not thread_id:
 
 AssistantConfigManager.update_assistant_config(assistant_id, thread_id)
 ass = SingletonAssistant.getInstance(client, assistant_id, thread_id, functions)
-ass.run(VoiceInterface(client))
+ass.run(CMDInterface())
 
