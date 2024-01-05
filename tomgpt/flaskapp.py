@@ -5,7 +5,7 @@
 from openai import OpenAI
 from flask import Flask, request, render_template, send_from_directory, abort
 import os
-import helper 
+import tomgpt.helper 
 from werkzeug.utils import safe_join
 
 app = Flask(__name__)

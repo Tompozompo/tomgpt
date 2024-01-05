@@ -8,9 +8,12 @@ from typing import Dict
 
 class WriteToFileFunction(ChatFunction):
 
-    def __init__(self, root) -> None:
+    def __init__(self, output_dir) -> None:
         super().__init__()
-        self.root = root
+        # Create the directory if it doesn't exist
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        self.output_dir = output_dir
 
     @property
     def name(self) -> str:
@@ -48,7 +51,7 @@ class WriteToFileFunction(ChatFunction):
             return response
 
         try:
-            file_path = os.path.join(self.root, 'output_files', filename)
+            file_path = os.path.join(self.output_dir, filename)
 
             # Write the content to the file
             with open(file_path, 'w') as file:
@@ -63,7 +66,7 @@ class WriteToFileFunction(ChatFunction):
     
 
 if __name__ == "__main__":
-    write_function = WriteToFileFunction()
+    write_function = WriteToFileFunction('.')
     
     test_filename = "test_file.txt"
     test_content = "Hello, this is a test content!"

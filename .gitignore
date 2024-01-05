@@ -1,16 +1,11 @@
-# Ignore compiled Python files
 *.pyc
-
-# Ignore the virtual environment directory
-venv/
-
-# Ignore the Flask cache directory
-__pycache__/
-
-# Ignore the local configuration file
-instance/
+.venv/
+build/
+dist/
 
 # Ignore the generated files
 output_files/
 saved_conversations/
 assistants_config.json
+output.mp3
+recorded_audio.wav

@@ -1,3 +1,7 @@
+# this was my first attempt, uses a older OpenAI API. 
+# no concept of assistants or threads, just raw chat completions
+# might not work right, I forget how far along this was. 
+
 import openai
 import json
 

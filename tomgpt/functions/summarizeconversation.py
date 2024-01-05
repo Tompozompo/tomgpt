@@ -2,12 +2,14 @@ import json
 import os
 from datetime import datetime
 from tomgpt.functions.chatfunction import ChatFunction
-from tomgpt.cmd_assistant import CMDAssistant
 
 class SummarizeConversationChatFunction(ChatFunction):
 
-    def __init__(self, root_directory):
-        self.root_directory = root_directory
+    def __init__(self, output_dir):
+        # Create the directory if it doesn't exist
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        self.output_dir = output_dir
 
     @property
     def name(self):
@@ -49,7 +51,7 @@ class SummarizeConversationChatFunction(ChatFunction):
 
         # Generate a timestamped filename
         filename = f'summarized_thread_{datetime.now().strftime("%Y%m%d_%H%M%S")}.json'
-        file_path = os.path.join(self.root_directory, 'saved_conversations', filename)
+        file_path = os.path.join(self.output_dir, filename)
 
         with open(file_path, 'w') as file:
             json.dump(conversation, file, indent=2)

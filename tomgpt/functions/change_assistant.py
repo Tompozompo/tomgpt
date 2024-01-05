@@ -1,7 +1,7 @@
 import os
 from openai import OpenAI
-from functions.chatfunction import ChatFunction
-import flaskapp
+from tomgpt.functions.chatfunction import ChatFunction
+import tomgpt.flaskapp
 
 class ChangeAssistantFunction(ChatFunction):
     @property

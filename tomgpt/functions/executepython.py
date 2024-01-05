@@ -47,6 +47,6 @@ class ExecutePythonScript(ChatFunction):
 # Example usage
 if __name__ == "__main__":
     executor = ExecutePythonScript()
-    script_path = "output_files\helper.py"  # Replace with an actual script path
+    script_path = "output_files/fibonacci.py"  # Replace with an actual script path
     result = executor.execute(script_path=script_path)
     print(json.dumps(result, indent=4))

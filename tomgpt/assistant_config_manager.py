@@ -9,6 +9,31 @@ CONFIG_FILENAME = "assistants_config.json"
 class AssistantConfigManager:
 
     @staticmethod
+    def update_assistant_config(assistant_id, thread_id):
+        try:
+            with open(CONFIG_FILENAME, "r") as file:
+                config = json.load(file)
+        except FileNotFoundError:
+            config = {"assistants": []}
+
+        found = False
+        for assistant in config["assistants"]:
+            if assistant["assistant_id"] == assistant_id and assistant["thread_id"] == thread_id:
+                found = True
+                break
+
+        if not found:
+            config["assistants"].append({
+                "assistant_id": assistant_id,
+                "thread_id": thread_id
+            })
+
+        with open(CONFIG_FILENAME, "w") as file:
+            json.dump(config, file, indent=2)
+
+        return True
+
+    @staticmethod
     def get_assistant_threads():
         """
         Reads the assistants configuration file and returns a list of
@@ -21,25 +46,3 @@ class AssistantConfigManager:
         except FileNotFoundError:
             # If the configuration file doesn't exist, return an empty list
             return []
-
-    @staticmethod
-    def update_assistant_config(assistant_id, thread_id):
-        try:
-            # Read the existing configuration file
-            with open(CONFIG_FILENAME, "r") as file:
-                config = json.load(file)
-        except FileNotFoundError:
-            # If file doesn't exist, start with an empty config
-            config = {"assistants": []}
-
-        # Add the new assistant and thread ID to the configuration
-        config["assistants"].append({
-            "assistant_id": assistant_id,
-            "thread_id": thread_id
-        })
-
-        # Write the updated configuration back to the file
-        with open(CONFIG_FILENAME, "w") as file:
-            json.dump(config, file, indent=2)
-
-        return True

@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "tomgpt"
+version = "0.1.0"
+description = "fucking around with chatgpt and functions. can read and write files and update itself."
+authors = ["Tompozompo <tpamon27@gmail.com>"]
+license = "GPL-3.0"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+openai = "^1.6.1"
+requests = "^2.31.0"
+Flask = "^3.0.0"
+sounddevice = "^0.4.6"
+soundfile = "^0.12.1"
+numpy = "^1.26.2"
+flake8 = "^6.1.0"
+flake8-black = "^0.3.6"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

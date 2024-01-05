@@ -1,3 +1,7 @@
+# also old way of using functions, this I think just started another
+# i remember some strangness around how to duplicate threads to have them talk to each other
+# I think getting the list of functions to copy was hard, so the friend didnt get them (maybe)
+
 import subprocess
 from typing import Dict
 from functions.chatfunction import ChatFunction

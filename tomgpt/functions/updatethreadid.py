@@ -3,7 +3,7 @@ This chat function updates the thread ID in the CMDAssistant singleton instance.
 It provides an interface to change the thread ID for the running assistant programmatically.
 """
 
-from tomgpt.cmd_assistant import CMDAssistant
+from tomgpt.brains.openai_singleton import SingletonAssistant
 from tomgpt.functions.chatfunction import ChatFunction
 
 class UpdateThreadIdChatFunction(ChatFunction):
@@ -30,6 +30,6 @@ class UpdateThreadIdChatFunction(ChatFunction):
         }
     
     def execute(self, new_thread_id):
-        cmd_assistant = CMDAssistant.getInstance()
-        cmd_assistant.thread_id = new_thread_id
+        ass = SingletonAssistant.getInstance()
+        ass.thread_id = new_thread_id
         return {"result": "Thread ID updated to {}".format(new_thread_id)}

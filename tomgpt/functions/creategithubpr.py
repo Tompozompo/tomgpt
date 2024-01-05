@@ -3,7 +3,7 @@ This ChatFunction commits changes and pushes them to a specified GitHub reposito
 The GitHub authentication token is expected to be provided via an environment variable named GITHUB_TOKEN.
 """
 
-from functions.chatfunction import ChatFunction
+from tomgpt.functions.chatfunction import ChatFunction
 from typing import Dict
 import subprocess
 import os
