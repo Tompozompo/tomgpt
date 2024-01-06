@@ -36,9 +36,8 @@ class ExecutePythonCode(ChatFunction):
                 tmp_file_path = tmp_file.name
                 tmp_file.write(python_code.encode("utf-8"))
 
-            # Execute the Python code using Poetry and subprocess
             result = subprocess.run(
-                ["poetry", "run", "python", tmp_file_path],
+                [sys.executable, tmp_file_path],
                 capture_output=True, text=True, check=True
             )
 
