@@ -74,6 +74,17 @@ class SingletonAssistant():
         print("thread_id: " + self.thread_id)
         print("+-+-+-+-+-+-+-+-+-+-+-+-+-+")
         while True:
+            # display messages
+            messages = self.client.beta.threads.messages.list(
+                order="asc",
+                thread_id=self.thread_id
+            )
+            try:
+                if messages: 
+                    interface.display(messages) 
+            except Exception as e:
+                print(f'Exception during interface.display: {e}')
+
             # get input
             try:
                 user_input = interface.get_input()
@@ -92,19 +103,8 @@ class SingletonAssistant():
                 assistant_id=self.assistant_id,
             )
             self._process_run(run)
-
-            # display messages
-            messages = self.client.beta.threads.messages.list(
-                order="asc",
-                thread_id=self.thread_id
-            )
-            try:
-                interface.display(messages)
-            except Exception as e:
-                print(f'Exception during interface.display: {e}')
-                continue
-
             
+
     def _get_function_by_name(self, name):
         """
         Gets function by name    

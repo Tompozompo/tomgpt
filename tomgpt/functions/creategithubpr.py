@@ -35,7 +35,7 @@ class CreateGithubPRFunction(ChatFunction):
                 },
                 "branch": {
                     "type": "string",
-                    "description": "The name of the branch to push to."
+                    "description": "The name of the branch to push to. DO NOT USE MAIN."
                 }
             },
             "required": ["message", "branch"]
@@ -44,6 +44,8 @@ class CreateGithubPRFunction(ChatFunction):
     def execute(self, **kwargs) -> Dict:
         message = kwargs.get('message')
         branch = kwargs.get('branch')
+        if branch.lower() == 'main':
+            return {'error': 'DO NOT COMMIT DIRECTLY TO MAIN'}
         github_token = os.getenv('GITHUB_TOKEN')  # Expecting the token to be in an environment variable for security
         repository = self.repo
         response = {}

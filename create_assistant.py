@@ -14,7 +14,6 @@ from tomgpt.functions.readlocalfile import ReadLocalFileFunction
 from tomgpt.functions.weather import WeatherFunction
 from tomgpt.functions.websearch import WebSearchFunction
 from tomgpt.functions.writefile import WriteToFileFunction
-from tomgpt.functions.summarizeconversation import SummarizeConversationChatFunction
 from tomgpt.functions.creategithubpr import CreateGithubPRFunction
 from tomgpt.functions.updatethreadid import UpdateThreadIdChatFunction
 from tomgpt.functions.savecurrentthread import SaveCurrentThreadFunction
@@ -45,6 +44,7 @@ pb = PromptBuilder()
 pb.add(TOMGPT)
 pb.add(TOM)
 pb.add(SAVE_FILE_TIP)
+pb.add(PYTHON_TIP)
 # pb.add(Prompts.filesystem_aware(root_dir, allowed_folders))
 prompt = pb.build()
 
@@ -60,16 +60,16 @@ functions = [
     CreateGithubPRFunction('tomgpt'),
 
     #io
-    WriteToFileFunction('output_files'),
-    ReadLocalFileFunction(),
+    # ListFilesChatFunction(),
+    # WriteToFileFunction('output_files'),
+    # ReadLocalFileFunction(),
+
     ExecutePythonCode(),
-    ListFilesChatFunction(),
 
     #thread management
     GetAssistantThreadsFunction(),
     UpdateThreadIdChatFunction(),
     SaveCurrentThreadFunction('saved_conversations'),
-    SummarizeConversationChatFunction('saved_conversations'),
 ]
 
 
