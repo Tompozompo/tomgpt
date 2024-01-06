@@ -8,7 +8,7 @@ from typing import Dict
 
 class ReadLocalFileFunction(ChatFunction):
 
-    def __init__(self, root: str) -> None:
+    def __init__(self, root: str = '.') -> None:
         """
         root: str - the root of the local filesystem to read from
         """

@@ -1,43 +1,59 @@
-from typing import Dict
 import subprocess
 import sys
 import json
-
+import os
+import tempfile
 from tomgpt.functions.chatfunction import ChatFunction
 
-class ExecutePythonScript(ChatFunction):
+class ExecutePythonCode(ChatFunction):
 
     @property
     def name(self) -> str:
-        return "execute_python_script"
+        return "execute_python_code"
 
     @property
     def description(self) -> str:
-        return "Executes a given Python script and returns its output."
+        return "Executes the provided Python code and returns its output."
 
     @property
-    def parameters(self) -> Dict:
+    def parameters(self) -> dict:
         return {
             "type": "object",
             "properties": {
-                "script_path": {
+                "python_code": {
                     "type": "string",
-                    "description": "Path to the Python script to be executed.",
+                    "description": "The Python code to be executed.",
                 },
             },
-            "required": ["script_path"],
+            "required": ["python_code"],
         }
 
-    def execute(self, **kwargs) -> Dict:
-        script_path = kwargs.get("script_path")
+    def execute(self, **kwargs) -> dict:
+        python_code = kwargs.get("python_code")
         try:
-            result = subprocess.run([sys.executable, script_path], capture_output=True, text=True, check=True)
+            # Create a temporary file to write the Python code to
+            with tempfile.NamedTemporaryFile(suffix=".py", delete=False) as tmp_file:
+                tmp_file_path = tmp_file.name
+                tmp_file.write(python_code.encode("utf-8"))
+
+            # Execute the Python code using Poetry and subprocess
+            result = subprocess.run(
+                ["poetry", "run", "python", tmp_file_path],
+                capture_output=True, text=True, check=True
+            )
+
+            # Remove the temporary file
+            os.remove(tmp_file_path)
+
             return {
                 "stdout": result.stdout,
                 "stderr": result.stderr,
                 "returncode": result.returncode
             }
         except subprocess.CalledProcessError as e:
+            # Remove the temporary file in case of a process error
+            os.remove(tmp_file_path)
+
             return {
                 "stdout": e.stdout,
                 "stderr": e.stderr,
@@ -46,7 +62,7 @@ class ExecutePythonScript(ChatFunction):
 
 # Example usage
 if __name__ == "__main__":
-    executor = ExecutePythonScript()
-    script_path = "output_files/fibonacci.py"  # Replace with an actual script path
-    result = executor.execute(script_path=script_path)
+    executor = ExecutePythonCode()
+    python_code = "print('Hello, world!')"
+    result = executor.execute(python_code=python_code)
     print(json.dumps(result, indent=4))

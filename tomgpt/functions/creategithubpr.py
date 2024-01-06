@@ -12,9 +12,9 @@ from tomgpt.helper import get_root_directory
 
 class CreateGithubPRFunction(ChatFunction):
 
-    def __init__(self, repository, branch):
-        self.repository = repository
-        self.branch = branch
+    def __init__(self, repo: str) -> None:
+        super().__init__()
+        self.repo = repo
 
     @property
     def name(self) -> str:
@@ -32,24 +32,39 @@ class CreateGithubPRFunction(ChatFunction):
                 "message": {
                     "type": "string",
                     "description": "The commit message. Please include brief description of any changes."
+                },
+                "branch": {
+                    "type": "string",
+                    "description": "The name of the branch to push to."
                 }
             },
-            "required": ["message"]
+            "required": ["message", "branch"]
         }
 
     def execute(self, **kwargs) -> Dict:
         message = kwargs.get('message')
+        branch = kwargs.get('branch')
         github_token = os.getenv('GITHUB_TOKEN')  # Expecting the token to be in an environment variable for security
+        repository = self.repo
         response = {}
         try:
             subprocess.run(['git', 'add', '.'], check=True, cwd=get_root_directory())
             subprocess.run(['git', 'commit', '-m', message], check=True, cwd=get_root_directory())
-            subprocess.run(['git', 'remote', 'add', 'origin', f'https://x-access-token:{github_token}@github.com/{self.repository}.git'], check=True, cwd=get_root_directory())
-            subprocess.run(['git', 'pull', 'origin', self.branch], check=True, cwd=get_root_directory())
-            subprocess.run(['git', 'push', 'origin', self.branch], check=True, cwd=get_root_directory())
+            
+            # Check if 'origin' remote already exists
+            remotes = subprocess.run(['git', 'remote'], capture_output=True, text=True, cwd=get_root_directory()).stdout.strip().split('\n')
+            if 'origin' in remotes:
+                # Update existing remote
+                subprocess.run(['git', 'remote', 'set-url', 'origin', f'https://x-access-token:{github_token}@github.com/{repository}.git'], check=True, cwd=get_root_directory())
+            else:
+                # Add new remote
+                subprocess.run(['git', 'remote', 'add', 'origin', f'https://x-access-token:{github_token}@github.com/{repository}.git'], check=True, cwd=get_root_directory())
+            
+            subprocess.run(['git', 'pull', 'origin', branch], check=True, cwd=get_root_directory())
+            subprocess.run(['git', 'push', 'origin', branch], check=True, cwd=get_root_directory())
 
-            response['message'] = f"Changes have been successfully committed and pushed to {self.branch}."
+            response['message'] = f"Changes have been successfully committed and pushed to {branch}."
         except subprocess.CalledProcessError as e:
-            response['error'] = f"A Git error occurred: {e.stderr}"
+            response['error'] = f"A Git error occurred: {str(e)}"
 
         return response
