@@ -47,21 +47,27 @@ class CreateGithubPRFunction(ChatFunction):
         github_token = os.getenv('GITHUB_TOKEN')  # Expecting the token to be in an environment variable for security
         repository = self.repo
         response = {}
+
         try:
+            # add changes
             subprocess.run(['git', 'add', '.'], check=True, cwd=get_root_directory())
+
+            # check if the branch exists on the remote
+            proc = subprocess.run(['git', 'ls-remote', '--heads', 'origin', branch], check=True, stdout=subprocess.PIPE, cwd=get_root_directory())
+            branch_exists = branch in proc.stdout.decode()
+
+            # create new branch if not exists
+            if not branch_exists:
+                subprocess.run(['git', 'checkout', '-b', branch], check=True, cwd=get_root_directory())
+
+            # commit changes
             subprocess.run(['git', 'commit', '-m', message], check=True, cwd=get_root_directory())
-            
-            # Check if 'origin' remote already exists
-            remotes = subprocess.run(['git', 'remote'], capture_output=True, text=True, cwd=get_root_directory()).stdout.strip().split('\n')
-            if 'origin' in remotes:
-                # Update existing remote
-                subprocess.run(['git', 'remote', 'set-url', 'origin', f'https://x-access-token:{github_token}@github.com/{repository}.git'], check=True, cwd=get_root_directory())
-            else:
-                # Add new remote
-                subprocess.run(['git', 'remote', 'add', 'origin', f'https://x-access-token:{github_token}@github.com/{repository}.git'], check=True, cwd=get_root_directory())
-            
+
+            # pull the latest changes from the branch
             subprocess.run(['git', 'pull', 'origin', branch], check=True, cwd=get_root_directory())
-            subprocess.run(['git', 'push', 'origin', branch], check=True, cwd=get_root_directory())
+
+            # push the branch to the remote
+            subprocess.run(['git', 'push', '--set-upstream', 'origin', branch], check=True, cwd=get_root_directory())
 
             response['message'] = f"Changes have been successfully committed and pushed to {branch}."
         except subprocess.CalledProcessError as e:
