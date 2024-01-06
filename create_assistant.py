@@ -8,19 +8,17 @@ from tomgpt.interfaces.cmd_assistant import CMDInterface
 from tomgpt.interfaces.voice_assistant import VoiceInterface
 from tomgpt.assistant_config_manager import AssistantConfigManager
 
-from tomgpt.functions.executepython import ExecutePythonScript
+from tomgpt.functions.executepython import ExecutePythonCode
 from tomgpt.functions.getassistantthreads import GetAssistantThreadsFunction
 from tomgpt.functions.readlocalfile import ReadLocalFileFunction
-from tomgpt.functions.readurl import ReadFromURLFunction
 from tomgpt.functions.weather import WeatherFunction
 from tomgpt.functions.websearch import WebSearchFunction
 from tomgpt.functions.writefile import WriteToFileFunction
-from tomgpt.functions.exceptionthrowing import ExceptionThrowingChatFunction
 from tomgpt.functions.summarizeconversation import SummarizeConversationChatFunction
 from tomgpt.functions.creategithubpr import CreateGithubPRFunction
 from tomgpt.functions.updatethreadid import UpdateThreadIdChatFunction
 from tomgpt.functions.savecurrentthread import SaveCurrentThreadFunction
-from tomgpt.functions.change_assistant import ChangeAssistantFunction
+from tomgpt.functions.list_files_chat_function import ListFilesChatFunction
 
 from tomgpt.prompts import *
 from tomgpt.helper import *
@@ -59,21 +57,19 @@ functions = [
     #misc
     WeatherFunction(),
     WebSearchFunction(),
-    ExceptionThrowingChatFunction(),
-    ChangeAssistantFunction(),
+    CreateGithubPRFunction('tomgpt'),
 
     #io
-    ReadFromURLFunction(),
     WriteToFileFunction('output_files'),
-    ReadLocalFileFunction(root_dir),
-    ExecutePythonScript(),
-    
+    ReadLocalFileFunction(),
+    ExecutePythonCode(),
+    ListFilesChatFunction(),
+
     #thread management
-    SummarizeConversationChatFunction('saved_conversations'),
     GetAssistantThreadsFunction(),
     UpdateThreadIdChatFunction(),
     SaveCurrentThreadFunction('saved_conversations'),
-    CreateGithubPRFunction('tomgpt', 'auto-branch'),
+    SummarizeConversationChatFunction('saved_conversations'),
 ]
 
 
