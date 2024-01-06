@@ -8,46 +8,33 @@ from tomgpt.interfaces.cmd_assistant import CMDInterface
 from tomgpt.interfaces.voice_assistant import VoiceInterface
 from tomgpt.assistant_config_manager import AssistantConfigManager
 
-from tomgpt.functions.executepython import ExecutePythonCode
 from tomgpt.functions.getassistantthreads import GetAssistantThreadsFunction
 from tomgpt.functions.readlocalfile import ReadLocalFileFunction
 from tomgpt.functions.weather import WeatherFunction
 from tomgpt.functions.websearch import WebSearchFunction
 from tomgpt.functions.writefile import WriteToFileFunction
-from tomgpt.functions.creategithubpr import CreateGithubPRFunction
 from tomgpt.functions.updatethreadid import UpdateThreadIdChatFunction
 from tomgpt.functions.savecurrentthread import SaveCurrentThreadFunction
 from tomgpt.functions.list_files_chat_function import ListFilesChatFunction
+from tomgpt.functions.creategithubbranch import CreateGithubBranchFunction
+from tomgpt.functions.commitandcreatepr import CommitAndCreatePRFunction
+from tomgpt.functions.mergegithubpr import MergeGithubPRFunction
+from tomgpt.functions.execute_subprocess_chat_function import ExecuteSubprocessChatFunction
 
 from tomgpt.prompts import *
 from tomgpt.helper import *
 from tomgpt.brains.openai_singleton import SingletonAssistant
 
-# used for any functions that do file io shit (WriteToFileFunction, ReadLocalFileFunction)
-# will be the directory the agent assumes it is existing inside, and will be prepended to io things
-# files at the root will also be made available to it
-root_dir = "tomgpt"
-
-# the folders that I want scaned for files for use in ReadLocalFileFunction
-allowed_folders = [
-    "functions",  # eg tomgpt/functions
-    "static",
-    "templates",
-]
-
 # name and model 
 name = 'TomGPT' 
-model = 'gpt-4-1106-preview'
+model = 'gpt-4'
 
 # build a prompt, i was surprised how well the worked for file io
 pb = PromptBuilder()
 pb.add(TOMGPT)
 pb.add(TOM)
 pb.add(SAVE_FILE_TIP)
-pb.add(PYTHON_TIP)
-# pb.add(Prompts.filesystem_aware(root_dir, allowed_folders))
 prompt = pb.build()
-
 
 # list of functions to use, any of these can be used by the bot
 # there is some limit i forget like 20 or something
@@ -57,18 +44,20 @@ functions = [
     #misc
     WeatherFunction(),
     WebSearchFunction(),
-    CreateGithubPRFunction('tomgpt'),
+    ExecuteSubprocessChatFunction(),
+
+    #git
+    CreateGithubBranchFunction('tomgpt'),
+    CommitAndCreatePRFunction('tomgpt'),
+    MergeGithubPRFunction('tomgpt'),
 
     #io
-    # ListFilesChatFunction(),
-    # WriteToFileFunction('output_files'),
-    # ReadLocalFileFunction(),
-
-    ExecutePythonCode(),
+    ListFilesChatFunction(),
+    WriteToFileFunction('output_files'),
+    ReadLocalFileFunction(),
+    # ExecutePythonCode(),
 
     #thread management
-    GetAssistantThreadsFunction(),
-    UpdateThreadIdChatFunction(),
     SaveCurrentThreadFunction('saved_conversations'),
 ]
 
