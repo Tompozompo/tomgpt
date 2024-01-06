@@ -77,3 +77,8 @@ class ChatFunction(ABC):
             "description": self.description,
             "parameters": self.parameters,
         }
+
+# Implementation should include example usage
+if __name__ == "__main__":
+    cf = ChatFunction()
+    print(cf.execute())

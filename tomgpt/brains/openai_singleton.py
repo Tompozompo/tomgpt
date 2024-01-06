@@ -164,10 +164,16 @@ class SingletonAssistant():
                     tool_outputs=function_outputs
                 )
             elif run.status == "failed":
+                print('failed!')
+                print(run)
                 return
             elif run.status == "expired":
+                print('expired!')
+                print(run)
                 return
             elif run.status == "cancelled":
+                print('cancelled!')
+                print(run)
                 return
         print()
 

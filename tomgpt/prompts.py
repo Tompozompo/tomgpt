@@ -2,7 +2,7 @@
 # just the prompts
 
 from tomgpt import helper
-
+from tomgpt.functions.list_files_chat_function import ListFilesChatFunction
 
 TOMGIOH="""
 You are TomGiOh helper. 
@@ -33,10 +33,10 @@ You can run abstract python code. Use this to interact with the local file syste
 """
 class Prompts():
     @staticmethod
-    def filesystem_aware(root_dir, allowed_folders) -> str:
-        dir_tree = helper.get_directory_tree(root_dir, allowed_folders)
-        result = "When the user asks you to read a file, you can find the available files here:"
-        for f in dir_tree:
+    def filesystem_aware(root_dir) -> str:
+        files = ListFilesChatFunction().execute(path='.')
+        result = "The root of the filesystem you work in looks like"
+        for f in files:
             result = result + "\n - " + f
         return result
 

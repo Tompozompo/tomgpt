@@ -38,3 +38,9 @@ class ListFilesChatFunction(ChatFunction):
             "description": self.description,
             "parameters": self.parameters
         }
+
+# Example usage
+if __name__ == "__main__":
+    list_files_function = ListFilesChatFunction()
+    files_info = list_files_function.execute(path=".")
+    print(files_info)

@@ -17,3 +17,9 @@ class GetAssistantThreadsFunction(ChatFunction):
 
     def execute(self, **kwargs):
         return {'assistants': AssistantConfigManager.get_assistant_threads()}
+
+# Example usage
+if __name__ == "__main__":
+    assistant_threads_function = GetAssistantThreadsFunction()
+    assistant_threads = assistant_threads_function.execute()
+    print(assistant_threads)
