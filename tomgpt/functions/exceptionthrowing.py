@@ -16,3 +16,11 @@ class ExceptionThrowingChatFunction(ChatFunction):
 
     def execute(self, **kwargs) -> dict:
         raise Exception('This function is designed to throw an exception.')
+
+# Example usage
+if __name__ == "__main__":
+    try:
+        exception_throwing_function = ExceptionThrowingChatFunction()
+        exception_throwing_function.execute()
+    except Exception as e:
+        print(f"Caught an exception as expected: {e}")

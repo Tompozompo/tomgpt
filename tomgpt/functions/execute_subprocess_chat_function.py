@@ -3,14 +3,14 @@ from .chatfunction import ChatFunction
 import subprocess
 import json
 
-class ExecuteBashCommandChatFunction(ChatFunction):
+class ExecuteSubprocessChatFunction(ChatFunction):
     @property
     def name(self) -> str:
-        return "execute_bash_command"
+        return "execute_subprocess"
 
     @property
     def description(self) -> str:
-        return "Executes an arbitrary bash command."
+        return "Executes an arbitrary command to the underlying os with subprocess.run"
 
     @property
     def parameters(self) -> dict:
@@ -19,7 +19,7 @@ class ExecuteBashCommandChatFunction(ChatFunction):
             "properties": {
                 "command": {
                     "type": "string",
-                    "description": "The bash command to execute.",
+                    "description": "The command to execute.",
                 }
             },
             "required": ["command"]
@@ -50,3 +50,10 @@ class ExecuteBashCommandChatFunction(ChatFunction):
             "description": self.description,
             "parameters": self.parameters
         }
+
+# Example usage
+if __name__ == "__main__":
+    bash_executor = ExecuteSubprocessChatFunction()
+    command = "echo 'Hello, world!'"
+    result = bash_executor.execute(command=command)
+    print(json.dumps(result, indent=4))
