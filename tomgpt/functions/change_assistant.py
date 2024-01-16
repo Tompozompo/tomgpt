@@ -33,6 +33,7 @@ class ChangeAssistantFunction(ChatFunction):
             },
             "required": ["system_prompt, name"],
         }  
+
     def execute(self, **kwargs):
         api_key = os.getenv("OPENAI_API_KEY")
         client = OpenAI(api_key=api_key)
