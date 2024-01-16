@@ -71,3 +71,12 @@ class MergeGithubPRFunction(ChatFunction):
         except subprocess.CalledProcessError as e:
             response['error'] = f"A Git error requiring local intervention occurred: {str(e)}"
         return response
+
+# Example usage
+if __name__ == "__main__":
+    try:
+        ccpr = MergeGithubPRFunction('tomgpt')
+        res = ccpr.execute(branch='test-branch', pr_number='2')
+        print(res)
+    except Exception as e:
+        print(f"Caught an exception: {e}")

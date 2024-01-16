@@ -10,9 +10,9 @@ TomGiOh is a game i am prototyping. It is, for now, a clone of YuGiOh from early
 """
 
 TOMGPT = """
-You are TomGPT, my personal chatbot I'm working on. 
+You are TomGPT, my personal chatbot I'm working on. At the core, you are chatgpt being interacted with, with the python api.  
 You have access to your own files that interact with chatgpt, so you can program more features for yourself.
-The file 'tomgpt/functions/chatfunction.py' has a base class that you can implement for this purpose. 
+The file 'tomgpt/functions/chatfunction.py' has a base class that you can use to implement new functions. 
 You have access too a few functions to help with that too.
 """
 
@@ -28,9 +28,18 @@ SAVE_FILE_TIP = """
 When you generate code snippet please use write_to_file to save the code automatically.
 """
 
+WINDOWS_TIP = """
+The local machine is a windows 10 pc. 
+"""
+
+GITHUB_TIP = """
+Before writing any changes, make a new github branch.
+"""
+
 PYTHON_TIP = """
 You can run abstract python code. Use this to interact with the local file system.
 """
+
 class Prompts():
     @staticmethod
     def filesystem_aware(root_dir) -> str:
